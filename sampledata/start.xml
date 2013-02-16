@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ezel>
+<ezel version="1.0">
+	<env width="460" height="300" bgcolor="#aaaaaa" fontsize="13" defaultspeed="5">
+		<title>サンプルeラーニングのタイトル</title>
+		<characters>
+			<character character-id="teacher" name="センセイ">
+				<images>
+					<image angle="center" width="200" height="280" src="teacher/center.gif" src-speaking="teacher/center_speaking.gif" />
+				</images>
+			</character>
+		</characters>
+		<credits>
+			<copyright>2009 Tomoya Koyanagi</copyright>
+			<staff part="監督">Tomoya Koyanagi</staff>
+			<staff part="脚本">Tomoya Koyanagi</staff>
+			<staff part="作画">Tomoya Koyanagi</staff>
+			<staff part="効果音">Tomoya Koyanagi</staff>
+		</credits>
+	</env>
+	<story>
+		<chapter anchor="start" title="Chapter1:HelloWorld">
+			<unset-bgimage />
+			<show-message-panel effect="fadein" />
+			<set-character effect="fadein" character-id="teacher" angle="center" />
+			<message speaker="？？？？"><![CDATA[・・・。]]></message>
+			<message speaker="teacher"><![CDATA[こんにちわ。私はセンセイです。]]></message>
+			<message speaker="teacher"><![CDATA[これは、eラーニングコンテンツを手軽に制作＆配信することを目的に開発されたEZELのサンプルコンテンツだヨ。]]></message>
+			<message speaker="teacher"><![CDATA[せっかくなんで、基本的な使い方とか、コンテンツの作り方的なレクチャーをしちゃうゾ。]]></message>
+			<message speaker="teacher"><![CDATA[・・・こころしてかかられよ。ヒッヒッヒ。]]></message>
+			<message speaker="teacher"><![CDATA[さて、今日は何から話そうかな？]]></message>
+			<select message="何について聞く？">
+				<option goto="ezel_basicstructure">入門編からお願いします！</option>
+				<option goto="envsection">環境設定について。</option>
+				<option goto="storysection">ストーリーの書き方について。</option>
+				<option goto="final">今日はもうやめる。</option>
+			</select>
+		</chapter>
+		<chapter anchor="ezel_basicstructure" title="Chapter1:XMLの基本構造">
+			<message speaker="teacher"><![CDATA[EZELのコンテンツは、書き方が決められているXML形式で作るよ。]]></message>
+			<message speaker="teacher"><![CDATA[例えば書き方はこうだ！]]></message>
+			<message speaker="teacher" anchor="loadsample" autonext="1" speed="4"><![CDATA[サンプル・・・]]></message>
+			<sleep long="500" />
+			<set-bgimage src="background/sample1.jpg" />
+			<slide type="text"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ezel>
+<ezel>
+	<env>
+		<!-- ここに環境設定を書く -->
+	</env>
+	<story>
+		<!-- ここにストーリーを書く -->
+	</story>
+</ezel>
+]]></slide>
+			<show-slide />
+			<message speaker="teacher" start="7" speed="8"><![CDATA[サンプル・・・サンプルっっ！！！]]></message>
+			<message speaker="teacher"><![CDATA[出ましたね。]]></message>
+			<message speaker="teacher"><![CDATA[XMLのルートエレメントは&lt;ezel&gt;です。]]></message>
+			<message speaker="teacher"><![CDATA[そして、その直下に&lt;env&gt;セクションと&lt;story&gt;セクションを置きます。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;env&gt;セクションには、eラーニングの環境設定を書いていきます。HTMLでいう &lt;head&gt;セクションと似てますね。]]></message>
+			<message speaker="teacher"><![CDATA[コレに対して、&lt;story&gt;セクションにはeラーニングのストーリーを書いていきます。]]></message>
+			<message speaker="teacher"><![CDATA[HTMLの&lt;body&gt;セクションに似ているね。]]></message>
+		</chapter>
+		<chapter anchor="envsection" title="Chapter2:環境設定 envセクション">
+			<hide-slide />
+			<message speaker="teacher"><![CDATA[はい。さらに細かく、順番に見ていきましょう。]]></message>
+			<message speaker="teacher"><![CDATA[まず、基本的な環境設定をしてみましょう。]]></message>
+			<slide type="text"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ezel>
+<ezel>
+	<env
+		width="600"
+		height="300"
+		bgcolor="#aaaaaa"
+		fontsize="13"
+		defaultspeed="5"
+	>
+		<!-- ここに環境設定を書く -->
+	</env>
+	<story>
+		<!-- ここにストーリーを書く -->
+	</story>
+</ezel>
+]]></slide>
+			<show-slide />
+			<message speaker="teacher"><![CDATA[&lt;env&gt;タグに幾つかの属性を書いて、全体の表示コントロールを設定できます。]]></message>
+			<message speaker="teacher"><![CDATA[widthとheightは、プレゼンテーション領域の大きさを指定できるヨ。]]></message>
+			<message speaker="teacher"><![CDATA[bgcolorはデフォルトの背景色、fontsizeはデフォルトの文字の大きさ、]]></message>
+			<message speaker="teacher"><![CDATA[defaultspeedはセリフを読み上げるデフォルトの速さを指定できるよ。]]></message>
+			<message speaker="teacher"><![CDATA[読み上げる速さは、0～9の数字で指定してね。]]></message>
+			<message speaker="teacher"><![CDATA[少ない方が遅くなるよ。]]></message>
+			<message speaker="teacher"><![CDATA[これらの属性はオプションだから、省略してもいいんだよ。]]></message>
+			<hide-slide />
+			<message speaker="teacher"><![CDATA[次に、キャラクターを定義するよ。]]></message>
+			<slide type="text"><![CDATA[<env>
+	<characters>
+		<character character-id="teacher" name="センセイ">
+		</character>
+	</characters>
+</env>
+]]></slide>
+			<show-slide />
+			<message speaker="teacher"><![CDATA[こんな感じ。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;env&gt;セクションの中に、&lt;characters&gt;タグを置いて、その中に&lt;character&gt;タグでキャラクターを定義するよ。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;character&gt;タグの属性で、キャラクターを設定するよ。]]></message>
+			<message speaker="teacher"><![CDATA[必要なのが2つ。]]></message>
+			<message speaker="teacher"><![CDATA[キャラクターのIDを指定する character-id属性 と、名前を設定する name属性。]]></message>
+			<message speaker="teacher"><![CDATA[character-id は、後でキャラクターを呼び出すときに使うよ。]]></message>
+			<message speaker="teacher"><![CDATA[だから、一人に一つずつ、固有の文字列をあてがってね。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;character&gt;タグは複数定義できるよ。]]></message>
+			<message speaker="teacher"><![CDATA[それから、&lt;character&gt;タグの中に&lt;images&gt;タグ、&lt;image&gt;タグで、画像を登録するよ。]]></message>
+			<slide type="text"><![CDATA[<env>
+	<characters>
+		<character character-id="teacher" name="センセイ">
+			<images>
+				<image
+					angle="center"
+					width="200"
+					height="280"
+					src="teacher/center.gif"
+					src-speaking="teacher/center_speaking.gif"
+				/>
+			</images>
+		</character>
+	</characters>
+</env>
+]]></slide>
+			<message speaker="teacher"><![CDATA[こんな感じ。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;image&gt;タグに、src属性で画像のパスを指示するよ。]]></message>
+			<message speaker="teacher"><![CDATA[src-speaking属性は、しゃべってる状態の画像。]]></message>
+			<message speaker="teacher"><![CDATA[口をパクパクしてる画像を指定してね。]]></message>
+			<message speaker="teacher"><![CDATA[アニメGIFで作るのがオススメだよ！]]></message>
+			<message speaker="teacher"><![CDATA[angle属性は、顔の向きとかを区別するために用意されたんだよ。]]></message>
+			<message speaker="teacher"><![CDATA[でも好きな文字列をあてていいんだよ。]]></message>
+			<message speaker="teacher"><![CDATA[例えば、表情とか、服装とかを区別してもいいかも知れないね。]]></message>
+			<message speaker="teacher"><![CDATA[あ、ちなみに、]]></message>
+			<message speaker="teacher"><![CDATA[画像の相対パス指定は、XMLのパスが基点になるから気をつけてね。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;image&gt;タグは複数登録できるよ。]]></message>
+			<slide type="text" />
+			<hide-slide />
+			<message speaker="teacher"><![CDATA[さて、環境設定編はこれくらいにしとこうかネ。]]></message>
+			<message speaker="teacher"><![CDATA[次へ行ってもいいかな？]]></message>
+			<select message="次へ行ってもいい？">
+				<option>はい、行ってちょうだい！</option>
+				<option goto="final">今日はもう疲れちゃった・・・。</option>
+			</select>
+		</chapter>
+		<chapter anchor="storysection" title="Chapter3:ストーリー部分 storyセクション">
+			<unset-bgimage />
+			<message speaker="teacher"><![CDATA[それじゃ、ストーリーの組み立て方の基本的なのをやってみようか。]]></message>
+			<message speaker="teacher"><![CDATA[ストーリーは、&lt;story&gt;セクションの中に書いていくんだよ。]]></message>
+			<message speaker="teacher"><![CDATA[まず、ストーリー全体をチャプターで括っていくんだよ。]]></message>
+			<slide type="text"><![CDATA[<story>
+	<chapter></chapter>
+	<chapter></chapter>
+	<chapter></chapter>
+</story>
+]]></slide>
+			<show-slide />
+			<message speaker="teacher"><![CDATA[こんな感じ。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;chapter&gt;タグでチャプターを定義するよ。]]></message>
+			<message speaker="teacher"><![CDATA[もちろん複数定義できるよ。]]></message>
+			<message speaker="teacher"><![CDATA[このチャプターの中に、ストーリーを組み込んでいくわけだ。]]></message>
+			<hide-slide />
+			<message speaker="teacher"><![CDATA[ストーリーを進めるのに使えるタグが沢山種類があるよ。]]></message>
+			<message speaker="teacher"><![CDATA[例えば、スライドを表示したり、キャラクターを配置したり、しゃべったり。]]></message>
+			<message speaker="teacher"><![CDATA[全部説明するのは大変だから、今日は特に大事なタグだけ紹介するね。]]></message>
+			<message speaker="teacher"><![CDATA[最初は・・・、もちろんコレだ。]]></message>
+			<slide type="text"><![CDATA[<story>
+	<chapter>
+		<message><![CDATA[ここに表示するセリフを書くよ！]]]><![CDATA[]></message>
+	</chapter>
+</story>
+]]></slide>
+			<show-slide />
+			<message speaker="teacher"><![CDATA[&lt;message&gt;タグ。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;message&gt;タグは、画面にセリフを表示するよ。]]></message>
+			<message speaker="teacher"><![CDATA[speaker属性を足すと、しゃべっている人の名前を表示することができるよ。]]></message>
+			<slide type="text"><![CDATA[<story>
+	<chapter>
+		<message speaker="teacher"><![CDATA[ここに表示するセリフを書くよ！]]]><![CDATA[]></message>
+	</chapter>
+</story>
+]]></slide>
+			<message speaker="teacher"><![CDATA[こうだよ。]]></message>
+			<message speaker="teacher"><![CDATA[speaker属性には、&lt;env&gt;セクションの&lt;character&gt;で宣言したキャラクターの character-id で指定するよ。]]></message>
+			<hide-slide />
+			<message speaker="teacher"><![CDATA[次は・・・、そうだな。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;set-character&gt;タグを使ってみよう。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;set-character&gt;タグは、画面にキャラクターを登場させるよ。]]></message>
+			<slide type="text"><![CDATA[<story>
+	<chapter>
+		<set-character character-id="teacher" angle="center" />
+	</chapter>
+</story>
+]]></slide>
+			<show-slide />
+			<message speaker="teacher"><![CDATA[こんな風に使うんだよ。]]></message>
+			<message speaker="teacher"><![CDATA[character-id属性にはキャラクターのID。angle属性にはアングル名を指定するよ。]]></message>
+			<message speaker="teacher"><![CDATA[超わかりやすいね！！]]></message>
+			<hide-slide />
+			<message autonext="1"></message>
+			<hide-message-panel effect="fadeout" />
+			<unset-character effect="fadeout" />
+			<sleep long="1000" />
+			<set-character character-id="teacher" angle="center" />
+			<show-message-panel />
+			<message speaker="teacher" anchor="finalmessage"><![CDATA[ばっ！！！！！]]></message>
+			<message speaker="teacher"><![CDATA[いまやってみたんだよ。]]></message>
+			<message speaker="teacher"><![CDATA[逆に、キャラクターを退場させるには、&lt;unset-character&gt;タグを使うよ。]]></message>
+
+			<message speaker="teacher"><![CDATA[さて。]]></message>
+			<message speaker="teacher"><![CDATA[これで、基本的なお話はできるようになったね。]]></message>
+			<message speaker="teacher"><![CDATA[もうちょっと聞くかい？]]></message>
+			<select message="もっと聞く？">
+				<option goto="">聞いてみようかな。</option>
+				<option goto="final">今日はもう疲れたよ。</option>
+			</select>
+			<message speaker="teacher"><![CDATA[おし。じゃぁ次いってみよう！]]></message>
+
+		</chapter>
+		<chapter anchor="storysection_more" title="Chapter : ストーリーの書き方をもっと聞く！">
+			<hide-slide />
+			<message speaker="teacher"><![CDATA[「行き先の選択」の技を使ってみようね。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;select&gt;タグと&lt;option&gt;タグを使うんだよ。]]></message>
+			<message speaker="teacher"><![CDATA[HTMLにそっくりだね。]]></message>
+			<message speaker="teacher"><![CDATA[だけど全然違うのヨ！]]></message>
+			<show-slide />
+			<slide type="text"><![CDATA[<story>
+	<chapter>
+		<select>
+			<option goto="anch1">選択肢1だよ</option>
+			<option goto="anch2">選択肢2だよ</option>
+			<option goto="anch3">選択肢3だよ</option>
+		</select>
+	</chapter>
+</story>
+]]></slide>
+			<message speaker="teacher"><![CDATA[こうだよ。]]></message>
+			<message speaker="teacher"><![CDATA[そうすると、こんな風な画面が表示されるの。]]></message>
+			<select>
+				<option goto="">選択肢1だよ</option>
+				<option goto="">選択肢2だよ</option>
+				<option goto="">選択肢3だよ</option>
+			</select>
+			<message speaker="teacher"><![CDATA[出たね。]]></message>
+			<message speaker="teacher"><![CDATA[goto属性には、選択したときの行き先を指定するんだよ。]]></message>
+			<message speaker="teacher"><![CDATA[あれ？]]></message>
+			<message speaker="teacher"><![CDATA[行き先はどうやって指定するんだろ？]]></message>
+			<hide-slide />
+			<message speaker="teacher"><![CDATA[これは別にアンカーを打っておいて、そこへ移動する機能なんだナ。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;chapter&gt;タグとか&lt;message&gt;タグに、<strong>anchor属性</strong>を付けて、名前をつけるんです。]]></message>
+			<show-slide />
+			<slide type="text"><![CDATA[<story>
+	<chapter>
+		<select>
+			<option goto="anch1">選択肢1だよ</option>
+			<option goto="anch2">選択肢2だよ</option>
+			<option goto="anch3">選択肢3だよ</option>
+		</select>
+		<message anchor="anch1">選択肢1の行き先。</message>
+		<message anchor="anch2">選択肢2の行き先。</message>
+		<message anchor="anch3">選択肢3の行き先。</message>
+	</chapter>
+</story>
+]]></slide>
+			<message speaker="teacher"><![CDATA[具体的にはこういうことだね。]]></message>
+			<message speaker="teacher"><![CDATA[これで、選んだアンカーが打たれたところに移動するんだよ。]]></message>
+			<slide type="text"><![CDATA[<story>
+	<chapter>
+		<goto goto="anch3" />
+		<message anchor="anch1">選択肢1の行き先。</message>
+		<message anchor="anch2">選択肢2の行き先。</message>
+		<message anchor="anch3">選択肢3の行き先。</message>
+	</chapter>
+</story>
+]]></slide>
+			<message speaker="teacher"><![CDATA[こんな風に、&lt;goto&gt;タグを使って強制的に飛ばしちゃうこともできるのよ。]]></message>
+		</chapter>
+		<chapter title="Chapter?">
+			<hide-slide />
+			<message speaker="teacher" anchor="finalmessage"><![CDATA[はい。]]></message>
+			<message speaker="teacher"><![CDATA[そろそろセンセイも疲れちゃったから、]]></message>
+			<message speaker="teacher"><![CDATA[ここら辺でおしまいにしようかネ。]]></message>
+			<message speaker="teacher"><![CDATA[作者のサイトは<a href="http://www.pxt.jp/">PXT255;</a>ダヨ！ よろしくね！]]></message>
+			<goto goto="final" />
+		</chapter>
+		<chapter title="Chapter?">
+			<message anchor="loadsample_repeat" speaker="teacher"><![CDATA[ハイっ！ サンプルを見たいんだね！？]]></message>
+			<goto goto="loadsample" />
+		</chapter>
+		<chapter title="Chapter Final" anchor="final">
+			<message speaker="teacher"><![CDATA[ハイっ！ 今日はこれでおしまいだよ！]]></message>
+			<message speaker="teacher"><![CDATA[ばいばーい！！]]></message>
+		</chapter>
+	</story>
+</ezel>

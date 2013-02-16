@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+<title>EZEL sample</title>
+<!--↓ライブラリをロード-->
+<script type="text/javascript" src="./jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="./PxEZEL.js"></script>
+</head>
+<body>
+<!--↓コンテンツを展開するステージを作成-->
+<div id="cont_ezel_content"></div>
+
+<!--↓コンテンツを展開する-->
+<script type="text/javascript">
+$(document).ready( function(){
+	//	PxEZELは、3つの引数を取る
+	var cont_PxEZEL = new PxEZEL(
+		'./' ,                            //PxEZEL.jsを置いたディレクトリのパス
+		'./sampledata/start.xml' ,       //コンテンツXMLのパス
+		document.getElementById('cont_ezel_content')  //ステージの要素
+	);
+} );
+</script>
+</body>
+</html>
