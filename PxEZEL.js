@@ -1,8 +1,8 @@
 /** --------------------------------------
 EZELコンテンツの実行環境ライブラリ
 (C)Tomoya Koyanagi.
-version 0.0.1a3
-LastUpdate : 4:02 2009/05/08
+version 0.1.0
+LastUpdate : 3:18 2009/05/13
 **/
 function PxEZEL( path_lib_dir , path_content , stageElement ){
 	this.path_lib_dir = path_lib_dir;
@@ -12,6 +12,7 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 
 	this.title = null;
 
+	this.debugmode = false;
 	this.env_stage_width = 420;
 	this.env_stage_height = 280;
 	this.env_stage_bgcolor = '#dddddd';
@@ -90,6 +91,21 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 		elm.style.backgroundColor = this.env_stage_bgcolor;
 		elm.style.width = this.env_stage_width + 'px';
 		elm.style.height = this.env_stage_height + 'px';
+
+//		//	BGM再生用レイヤー	//UTODO: サウンド系の機能、一時断念。
+//		this.keyElements.soundBGM = document.createElement('div');
+//		$( this.keyElements.soundBGM ).css( 'position' , 'absolute' ).css( 'left' , '0px' ).css( 'bottom' , '0px' ).css( 'visibility' , 'hidden' );
+//		elm.appendChild( this.keyElements.soundBGM );
+
+//		//	効果音再生用レイヤー	//UTODO: サウンド系の機能、一時断念。
+//		this.keyElements.soundEffect = document.createElement('div');
+//		$( this.keyElements.soundEffect ).css( 'position' , 'absolute' ).css( 'left' , '0px' ).css( 'bottom' , '0px' ).css( 'visibility' , 'hidden' );
+//		elm.appendChild( this.keyElements.soundEffect );
+
+//		//	話し声再生用レイヤー	//UTODO: voice機能、一時断念。キャッシュできずスムーズに再生できない。やり方 また考える。
+//		this.keyElements.soundVoice = document.createElement('div');
+//		$( this.keyElements.soundVoice ).css( 'position' , 'absolute' ).css( 'left' , '0px' ).css( 'bottom' , '0px' ).css( 'visibility' , 'hidden' );
+//		elm.appendChild( this.keyElements.soundVoice );
 
 		//	背景画像表示レイヤー
 		this.keyElements.backgroundLayer = document.createElement('div');
@@ -220,19 +236,6 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 
 				//--------------------------------------
 				//	環境設定読み込み
-
-				/*/	※PxEZEL 0.0.1a3 で廃止
-				//	属性から設定を得るのはやめにした。代わりに<conf>タグを使う。
-				var stageElementSetting = $( 'ezel > env' , data );
-				if( stageElementSetting.length ){
-					this.PxEZEL.env_stage_width   = stageElementSetting[0].getAttribute('width'        );
-					this.PxEZEL.env_stage_height  = stageElementSetting[0].getAttribute('height'       );
-					this.PxEZEL.env_stage_bgcolor = stageElementSetting[0].getAttribute('bgcolor'      );
-					this.PxEZEL.env_fontsize      = stageElementSetting[0].getAttribute('fontsize'     );
-					this.PxEZEL.env_defaultSpeed  = stageElementSetting[0].getAttribute('defaultspeed' );
-				}
-				//	/ ※PxEZEL 0.0.1a3 で廃止 /**/
-
 				var confs = $( 'ezel > env > conf' , data );
 				for( var i = 0; confs.length > i; i ++ ){
 					switch( confs[i].getAttribute( 'name' ) ){
@@ -270,12 +273,22 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 						name : characters[i].getAttribute('name') ,
 						images:{}
 					};
+
+//					//UTODO: voice機能、一時断念。キャッシュできずスムーズに再生できない。やり方 また考える。
+//					if( this.PxEZEL.strlen( characters[i].getAttribute('voice') ) ){
+//						currentCharacterInfo.voice = document.createElement('embed');
+//						currentCharacterInfo.voice.setAttribute( 'src' , this.PxEZEL.getRealpath( characters[i].getAttribute('voice') ) );
+//						currentCharacterInfo.voice.setAttribute( 'hidden' , true );
+//						currentCharacterInfo.voice.setAttribute( 'autostart' , true );
+//					}
+
 					var characterImages = $( '> images > image' , characters[i] );
 					for( var i2 = 0; characterImages.length > i2; i2 ++ ){
 						var angle = characterImages[i2].getAttribute('angle');
 						currentCharacterInfo.images[angle] = {}
 						currentCharacterInfo.images[angle].width = characterImages[i2].getAttribute('width');
 						currentCharacterInfo.images[angle].height = characterImages[i2].getAttribute('height');
+						currentCharacterInfo.images[angle].intro = characterImages[i2].getAttribute('intro');
 						currentCharacterInfo.images[angle].src = new Image;
 						currentCharacterInfo.images[angle].src.src = this.PxEZEL.getRealpath( characterImages[i2].getAttribute('src') );
 						currentCharacterInfo.images[angle].srcSpeaking = new Image;
@@ -349,6 +362,9 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 								}
 								currentAction.position = chapterProperty[i2].getAttribute( 'position' );
 								currentAction.moveto = chapterProperty[i2].getAttribute( 'moveto' );
+								currentAction.width = chapterProperty[i2].getAttribute( 'width' );
+								currentAction.height = chapterProperty[i2].getAttribute( 'height' );
+								currentAction.bgcolor = chapterProperty[i2].getAttribute( 'bgcolor' );
 								break;
 							case 'show-slide':
 								currentAction.effect = chapterProperty[i2].getAttribute( 'effect' );
@@ -380,6 +396,10 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 								var tmp_element = document.createElement('div');
 								tmp_element.innerHTML = $( chapterProperty[i2] ).text();
 								currentAction.text = $( tmp_element ).text();
+								$( 'a' , tmp_element )
+									.css('color','#0000ee')
+									.css('text-decoration','underline')
+								;
 								currentAction.html = tmp_element.innerHTML;
 								currentAction.speaker = chapterProperty[i2].getAttribute( 'speaker' );
 								currentAction.autonext = chapterProperty[i2].getAttribute( 'autonext' );
@@ -470,19 +490,28 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 				imageElm.style.left = (this.stageElement.offsetWidth/2) - ( imageElm.width/2 ) + 'px';
 				imageElm.style.display = 'none';
 				this.keyElements.characterLayer.appendChild( imageElm );
+				var intro = this.characters[this.playingStatus.characterIndex].images[this.playingStatus.characterAngle].intro;
+				var PxEZEL = this;
 				if( currentAction.effect == 'fadein' ){
-					var PxEZEL = this;
 					$( imageElm ).fadeIn(
 						'slow' ,
 						function(){
-							PxEZEL.playingStatus.fixed = true;
-							PxEZEL.playNext();
+							if( PxEZEL.strlen( intro ) ){
+								setTimeout( function(){ PxEZEL.playingStatus.fixed = true; PxEZEL.playNext(); } , parseInt( intro ) );
+							}else{
+								PxEZEL.playingStatus.fixed = true;
+								PxEZEL.playNext();
+							}
 						}
 					);
 				}else{
 					imageElm.style.display = 'block';
-					this.playingStatus.fixed = true;
-					this.playNext();
+					if( this.strlen( intro ) ){
+						setTimeout( function(){ PxEZEL.playingStatus.fixed = true; PxEZEL.playNext(); } , parseInt( intro ) );
+					}else{
+						this.playingStatus.fixed = true;
+						this.playNext();
+					}
 				}
 				return true;
 				break;
@@ -597,6 +626,43 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 			case 'slide':
 				this.keyElements.slideLayer.innerHTML = '';
 				$( this.keyElements.slideLayer ).css( 'overflow' , 'auto' );
+				if( this.strlen( currentAction.bgcolor ) ){
+					if( currentAction.bgcolor == 'auto' ){
+						$( this.keyElements.slideLayer ).css( 'background-color' , '#ffff99' );
+					}else{
+						$( this.keyElements.slideLayer ).css( 'background-color' , currentAction.bgcolor );
+					}
+				}
+				if( this.strlen( currentAction.width ) ){
+					if( currentAction.width == 'auto' ){
+						$( this.keyElements.slideLayer )
+							.css( 'width' , ( this.env_stage_width -10 -10 ) + 'px' )
+							.css( 'left' , '10px' )
+						;
+					}else{
+						$( this.keyElements.slideLayer )
+							.css( 'width' , currentAction.width + 'px' )
+							.css( 'left' , ( ( this.env_stage_width - currentAction.width )/2 ) + 'px' )
+						;
+					}
+				}
+				if( this.strlen( currentAction.height ) ){
+					if( currentAction.width == 'auto' ){
+						$( this.keyElements.slideLayer )
+							.css( 'height' , ( this.env_stage_height -75 -10 -10 -5 ) + 'px' )
+							.css( 'top' , '10px' )
+						;
+					}else{
+						var tmp_top = ( ( this.env_stage_height - currentAction.height -75 -5 )/2 );
+						if( tmp_top < 0 ){
+							tmp_top = 0;
+						}
+						$( this.keyElements.slideLayer )
+							.css( 'height' , currentAction.height + 'px' )
+							.css( 'top' , ( tmp_top ) + 'px' )
+						;
+					}
+				}
 
 				switch( currentAction.type ){
 					case 'image':
@@ -609,8 +675,10 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 						this.keyElements.slideLayer.appendChild( elmImg );
 						break;
 					case 'swf':
-						this.keyElements.slideLayer.style.overflow = 'auto';
-						alert( 'UTODO: Flashスライド機能('+currentAction.type+')は開発中です。' );
+						$( this.keyElements.slideLayer ).css( 'overflow' , 'auto' );
+						if( this.debugmode ){
+							alert( 'UTODO: Flashスライド機能('+currentAction.type+')は開発中です。' );
+						}
 						break;
 					case 'html':
 					case 'text':
@@ -765,7 +833,8 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 
 				this.keyElements.messagePanel.innerHTML = '';
 				this.printMessage( {
-					PxEZEL: this ,
+					PxEZEL : this ,
+					characterIndex : speakerIndex ,
 					strBefore: currentAction.text ,
 					finalHtml: currentAction.html ,
 					autonext: currentAction.autonext ,
@@ -784,20 +853,32 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 				} );
 				break;
 			default:
-				alert('ERROR! 不明なアクション['+currentAction.action+']が使用されました。');
+				if( this.debugmode ){
+					alert('ERROR! 不明なアクション['+currentAction.action+']が使用されました。');
+				}
 				this.playingStatus.fixed = true;
 				this.setCtrl( {type:'next'} );
 				break;
 		}
 
 		return true;
-	}
+	}//function play()
 	//	/ プレゼンテーションを再生する
 	//----------------------------------------------------------------------------
 
 	//--------------------------------------
 	//	メッセージパネルにメッセージを出力する
 	this.printMessage = function( args ){
+
+//		//UTODO: voice機能、一時断念。キャッシュできずスムーズに再生できない。やり方 また考える。
+//		if( typeof(args.characterIndex) == 'number' ){
+//			var speakerVoice = args.PxEZEL.characters[args.characterIndex].voice;
+//			if( speakerVoice ){
+//				args.PxEZEL.keyElements.soundVoice.innerHTML = '';
+//				args.PxEZEL.keyElements.soundVoice.appendChild( speakerVoice );
+//			}
+//		}
+
 		if( args.speed == 9 ){
 			//	最高速度なら、一発表示
 			$( args.PxEZEL.keyElements.messagePanel ).html( args.finalHtml );

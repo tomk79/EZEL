@@ -178,9 +178,24 @@
 			<show-slide />
 			<message speaker="teacher"><![CDATA[&lt;message&gt;タグ。]]></message>
 			<message speaker="teacher"><![CDATA[&lt;message&gt;タグは、画面にセリフを表示するよ。]]></message>
+			<message speaker="teacher"><![CDATA[おっと、その前に。]]></message>
+			<message speaker="teacher"><![CDATA[大事なことを忘れていたヨ。]]></message>
+			<message speaker="teacher"><![CDATA[メッセージパネルを表示させておかないと、メッセージが見えないんだよね！]]></message>
+			<message speaker="teacher"><![CDATA[メッセージパネルは、&lt;show-message-panel&gt;タグで表示できるよ。]]></message>
+			<slide type="text"><![CDATA[<story>
+	<chapter>
+		<show-message-panel />
+		<message><![CDATA[ここに表示するセリフを書くよ！]]]><![CDATA[]></message>
+	</chapter>
+</story>
+]]></slide>
+			<message speaker="teacher"><![CDATA[こうだね。]]></message>
+			<message speaker="teacher"><![CDATA[逆に隠すときは &lt;hide-message-panel&gt;タグを使ってね！]]></message>
+			<message speaker="teacher"><![CDATA[さて、&lt;message&gt;タグに話を戻そうね。]]></message>
 			<message speaker="teacher"><![CDATA[speaker属性を足すと、しゃべっている人の名前を表示することができるよ。]]></message>
 			<slide type="text"><![CDATA[<story>
 	<chapter>
+		<show-message-panel />
 		<message speaker="teacher"><![CDATA[ここに表示するセリフを書くよ！]]]><![CDATA[]></message>
 	</chapter>
 </story>
@@ -283,9 +298,7 @@
 		<chapter title="Chapter?">
 			<hide-slide />
 			<message speaker="teacher" anchor="finalmessage"><![CDATA[はい。]]></message>
-			<message speaker="teacher"><![CDATA[そろそろセンセイも疲れちゃったから、]]></message>
-			<message speaker="teacher"><![CDATA[ここら辺でおしまいにしようかネ。]]></message>
-			<message speaker="teacher"><![CDATA[作者のサイトは<a href="http://www.pxt.jp/">PXT255;</a>ダヨ！ よろしくね！]]></message>
+			<message speaker="teacher"><![CDATA[そろそろセンセイも疲れちゃったから、ここら辺でおしまいにしようかネ。]]></message>
 			<goto goto="final" />
 		</chapter>
 		<chapter title="Chapter?">
@@ -293,7 +306,8 @@
 			<goto goto="loadsample" />
 		</chapter>
 		<chapter title="Chapter Final" anchor="final">
-			<message speaker="teacher"><![CDATA[ハイっ！ 今日はこれでおしまいだよ！]]></message>
+			<message speaker="teacher"><![CDATA[ハイっ！ じゃぁ 今日はこれでおしまいだよ！]]></message>
+			<message speaker="teacher"><![CDATA[作者のサイトは<a href="http://www.pxt.jp/">PXT255;</a>ダヨ！ よろしくね！]]></message>
 			<message speaker="teacher"><![CDATA[ばいばーい！！]]></message>
 		</chapter>
 	</story>
