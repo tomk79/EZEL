@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE ezel>
 <ezel version="1.0">
-	<env width="460" height="300" bgcolor="#aaaaaa" fontsize="13" defaultspeed="5">
-		<title>サンプルeラーニングのタイトル</title>
+	<env>
+		<title>サンプルeラーニング</title>
+		<conf name="width" value="460" />
+		<conf name="height" value="300" />
+		<conf name="bgcolor" value="#aaaaaa" />
+		<conf name="fontsize" value="13" />
+		<conf name="defaultspeed" value="5" />
 		<characters>
 			<character character-id="teacher" name="センセイ">
 				<images>
@@ -12,10 +17,7 @@
 		</characters>
 		<credits>
 			<copyright>2009 Tomoya Koyanagi</copyright>
-			<staff part="監督">Tomoya Koyanagi</staff>
-			<staff part="脚本">Tomoya Koyanagi</staff>
-			<staff part="作画">Tomoya Koyanagi</staff>
-			<staff part="効果音">Tomoya Koyanagi</staff>
+			<staff part="監督/制作">Tomoya Koyanagi</staff>
 		</credits>
 	</env>
 	<story>
@@ -69,14 +71,13 @@
 			<slide type="text"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE ezel>
 <ezel>
-	<env
-		width="600"
-		height="300"
-		bgcolor="#aaaaaa"
-		fontsize="13"
-		defaultspeed="5"
-	>
+	<env>
 		<!-- ここに環境設定を書く -->
+		<conf name="width" value="460" />
+		<conf name="height" value="300" />
+		<conf name="bgcolor" value="#aaaaaa" />
+		<conf name="fontsize" value="13" />
+		<conf name="defaultspeed" value="5" />
 	</env>
 	<story>
 		<!-- ここにストーリーを書く -->
@@ -84,10 +85,11 @@
 </ezel>
 ]]></slide>
 			<show-slide />
-			<message speaker="teacher"><![CDATA[&lt;env&gt;タグに幾つかの属性を書いて、全体の表示コントロールを設定できます。]]></message>
-			<message speaker="teacher"><![CDATA[widthとheightは、プレゼンテーション領域の大きさを指定できるヨ。]]></message>
-			<message speaker="teacher"><![CDATA[bgcolorはデフォルトの背景色、fontsizeはデフォルトの文字の大きさ、]]></message>
-			<message speaker="teacher"><![CDATA[defaultspeedはセリフを読み上げるデフォルトの速さを指定できるよ。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;env&gt;セクション内に幾つかの&lt;conf&gt;タグを書いて、全体の表示コントロールを設定できるよ。]]></message>
+			<message speaker="teacher"><![CDATA[&lt;conf&gt;タグは、name属性で設定項目の種類を決めて、value属性でその値を決めるんだよ。]]></message>
+			<message speaker="teacher"><![CDATA[widthとheightは、プレゼンテーション領域の大きさを、]]></message>
+			<message speaker="teacher"><![CDATA[bgcolorはデフォルトの背景色、fontsizeはデフォルトの文字の大きさを、]]></message>
+			<message speaker="teacher"><![CDATA[defaultspeedはセリフを読み上げるデフォルトの速さを指定できるヨ。]]></message>
 			<message speaker="teacher"><![CDATA[読み上げる速さは、0～9の数字で指定してね。]]></message>
 			<message speaker="teacher"><![CDATA[少ない方が遅くなるよ。]]></message>
 			<message speaker="teacher"><![CDATA[これらの属性はオプションだから、省略してもいいんだよ。]]></message>

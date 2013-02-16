@@ -1,8 +1,8 @@
 /** --------------------------------------
 EZELコンテンツの実行環境ライブラリ
 (C)Tomoya Koyanagi.
-version 0.0.1a2
-LastUpdate : 3:28 2009/04/29
+version 0.0.1a3
+LastUpdate : 4:02 2009/05/08
 **/
 function PxEZEL( path_lib_dir , path_content , stageElement ){
 	this.path_lib_dir = path_lib_dir;
@@ -10,8 +10,10 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 	this.stageElement = stageElement;
 	this.stageElement.PxEZEL = this;
 
-	this.env_stage_width = 320;
-	this.env_stage_height = 180;
+	this.title = null;
+
+	this.env_stage_width = 420;
+	this.env_stage_height = 280;
 	this.env_stage_bgcolor = '#dddddd';
 	this.env_fontsize = 13;
 	this.env_defaultSpeed = 5;
@@ -21,6 +23,7 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 	this.characters = [];
 	this.story = [];
 	this.anchorIndexes = {};
+	this.credits = {};
 
 	this.playingStatus = {};
 
@@ -31,9 +34,15 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 		this.path_content = path_content;
 		this.stageElement = stageElement;
 
+		this.title = null;
+
 		this.characters = [];
 		this.story = [];
 		this.anchorIndexes = {};
+		this.credits = {
+			copyright : [] ,
+			staff : {}
+		};
 
 		this.playingStatus = {
 			chapterIndex : 0 ,
@@ -72,6 +81,7 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 	//	ステージをリセットする
 	this.resetStage = function(){
 		var elm = this.getStageElement();
+		elm.innerHTML = '';
 		elm.style.overflow = 'hidden';
 		elm.style.position = 'relative';
 		elm.style.top = '0px';
@@ -80,7 +90,6 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 		elm.style.backgroundColor = this.env_stage_bgcolor;
 		elm.style.width = this.env_stage_width + 'px';
 		elm.style.height = this.env_stage_height + 'px';
-		elm.innerHTML = '';
 
 		//	背景画像表示レイヤー
 		this.keyElements.backgroundLayer = document.createElement('div');
@@ -112,14 +121,14 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 		this.keyElements.slideLayer = document.createElement('div');
 		this.keyElements.slideLayer.PxEZEL = this;
 		this.keyElements.slideLayer.style.position = 'absolute';
-		this.keyElements.slideLayer.style.right = '10%';
-		this.keyElements.slideLayer.style.top = '5%';
+		this.keyElements.slideLayer.style.left = '10px';
+		this.keyElements.slideLayer.style.top = '10px';
 		this.keyElements.slideLayer.style.overflow = 'auto';
 		this.keyElements.slideLayer.style.backgroundColor = '#ffff99';
 		this.keyElements.slideLayer.style.backgroundImage = 'none';
 		this.keyElements.slideLayer.style.opacity = '0.9';
-		this.keyElements.slideLayer.style.width = '80%';
-		this.keyElements.slideLayer.style.height = '65%';
+		this.keyElements.slideLayer.style.width = ( this.env_stage_width -10 -10 ) + 'px';
+		this.keyElements.slideLayer.style.height = ( this.env_stage_height -75 -10 -10 -5 ) + 'px';
 		this.keyElements.slideLayer.style.display = 'none';
 
 		elm.appendChild( this.keyElements.slideLayer );
@@ -134,7 +143,7 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 		this.keyElements.messagePanelFrame.style.backgroundColor = '#eeeeee';
 		this.keyElements.messagePanelFrame.style.opacity = '0.9';
 		this.keyElements.messagePanelFrame.style.width = ( this.env_stage_width - 20 ) + 'px';
-		this.keyElements.messagePanelFrame.style.height = ( 5 ) + 'em';
+		this.keyElements.messagePanelFrame.style.height = '65px';
 		this.keyElements.messagePanelFrame.style.display = 'none';
 		this.keyElements.messagePanelFrame.style.border = '1px solid #666666';
 		elm.appendChild( this.keyElements.messagePanelFrame );
@@ -147,7 +156,7 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 		this.keyElements.messagePanel.style.overflow = 'visible';
 		this.keyElements.messagePanel.style.backgroundColor = 'transparent';
 		this.keyElements.messagePanel.style.width = ( this.env_stage_width - 40 ) + 'px';
-		this.keyElements.messagePanel.style.height = ( 3 ) + 'em';
+		this.keyElements.messagePanel.style.height = ( 65 - 20 ) + 'px';
 		this.keyElements.messagePanel.style.lineHeight = '1.4em';
 		this.keyElements.messagePanel.style.display = 'none';
 		elm.appendChild( this.keyElements.messagePanel );
@@ -158,7 +167,7 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 		this.keyElements.messagePanelSpeaker.style.left = '15px';
 		this.keyElements.messagePanelSpeaker.style.bottom = ( 6.2 ) + 'em';
 		this.keyElements.messagePanelSpeaker.style.overflow = 'visible';
-		this.keyElements.messagePanelSpeaker.style.float = 'left';
+		$( this.keyElements.messagePanelSpeaker ).css( 'float' , 'left' );
 		this.keyElements.messagePanelSpeaker.style.padding = '3px';
 		this.keyElements.messagePanelSpeaker.style.fontSize = '11px';
 		this.keyElements.messagePanelSpeaker.style.color = '#f6f6f6';
@@ -199,7 +208,7 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 	this.loadContent = function(){
 
 		$.ajax( {
-			PxEZEL: this,//仮実装
+			PxEZEL: this,
 			url: this.getPathContent() ,
 			error:function(){
 				alert('エラー：XML取得に失敗しました。');
@@ -207,8 +216,13 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 			} ,
 			success:function( data ){
 
+				this.PxEZEL.title = $( 'ezel > env > title' , data ).text();
+
 				//--------------------------------------
 				//	環境設定読み込み
+
+				/*/	※PxEZEL 0.0.1a3 で廃止
+				//	属性から設定を得るのはやめにした。代わりに<conf>タグを使う。
 				var stageElementSetting = $( 'ezel > env' , data );
 				if( stageElementSetting.length ){
 					this.PxEZEL.env_stage_width   = stageElementSetting[0].getAttribute('width'        );
@@ -217,12 +231,38 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 					this.PxEZEL.env_fontsize      = stageElementSetting[0].getAttribute('fontsize'     );
 					this.PxEZEL.env_defaultSpeed  = stageElementSetting[0].getAttribute('defaultspeed' );
 				}
+				//	/ ※PxEZEL 0.0.1a3 で廃止 /**/
+
+				var confs = $( 'ezel > env > conf' , data );
+				for( var i = 0; confs.length > i; i ++ ){
+					switch( confs[i].getAttribute( 'name' ) ){
+						case 'width':
+							this.PxEZEL.env_stage_width   = confs[i].getAttribute('value');
+							break;
+						case 'height':
+							this.PxEZEL.env_stage_height  = confs[i].getAttribute('value');
+							break;
+						case 'bgcolor':
+							this.PxEZEL.env_stage_bgcolor = confs[i].getAttribute('value');
+							break;
+						case 'fontsize':
+							this.PxEZEL.env_fontsize      = confs[i].getAttribute('value');
+							break;
+						case 'defaultspeed':
+							this.PxEZEL.env_defaultSpeed  = confs[i].getAttribute('value');
+							break;
+					}
+				}
 
 				if( this.PxEZEL.env_defaultSpeed == undefined || !this.PxEZEL.env_defaultSpeed.length ){
 					this.PxEZEL.env_defaultSpeed = 5;
 				}
 				this.PxEZEL.env_defaultSpeed = Number(this.PxEZEL.env_defaultSpeed);
+				//	/ 環境設定読み込み
+				//--------------------------------------
 
+				//--------------------------------------
+				//	キャラクターをロード
 				var characters = $( 'ezel > env > characters > character' , data );
 				for( var i = 0; characters.length > i; i ++ ){
 					var currentCharacterInfo = {
@@ -244,7 +284,7 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 
 					this.PxEZEL.characters.push( currentCharacterInfo );
 				}
-				//	/ 環境設定読み込み
+				//	/ キャラクターをロード
 				//--------------------------------------
 
 				this.PxEZEL.resetStage();
@@ -268,7 +308,6 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 					var chapterProperty = $('> *',chapterList[i]);
 					//チャプターを解析
 					for( var i2 = 0; chapterProperty.length > i2; i2 ++ ){
-//						alert( chapterProperty[i2].tagName );
 						var currentAction = { action:chapterProperty[i2].tagName };
 						switch( currentAction.action ){
 							case 'set-character':
@@ -288,16 +327,34 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 							case 'set-bgimage':
 								currentAction.image = new Image;
 								currentAction.image.src = this.PxEZEL.getRealpath( chapterProperty[i2].getAttribute( 'src' ) );
+								currentAction.effect = chapterProperty[i2].getAttribute( 'effect' );
 								break;
 							case 'unset-bgimage':
+								currentAction.effect = chapterProperty[i2].getAttribute( 'effect' );
 								break;
 							case 'slide':
 								currentAction.type = chapterProperty[i2].getAttribute( 'type' );
-								currentAction.content = $( chapterProperty[i2] ).text();
+								switch( currentAction.type ){
+									case 'image':
+										currentAction.content = new Image;
+										currentAction.content.src = this.PxEZEL.getRealpath( chapterProperty[i2].getAttribute( 'src' ) );
+										break;
+									case 'swf':
+										break;
+									case 'html':
+									case 'text':
+									default:
+										currentAction.content = $( chapterProperty[i2] ).text();
+										break;
+								}
+								currentAction.position = chapterProperty[i2].getAttribute( 'position' );
+								currentAction.moveto = chapterProperty[i2].getAttribute( 'moveto' );
 								break;
 							case 'show-slide':
+								currentAction.effect = chapterProperty[i2].getAttribute( 'effect' );
 								break;
 							case 'hide-slide':
+								currentAction.effect = chapterProperty[i2].getAttribute( 'effect' );
 								break;
 							case 'select':
 								currentAction.message = chapterProperty[i2].getAttribute( 'message' );
@@ -358,6 +415,24 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 				//	/ ストーリー読み込み
 				//--------------------------------------
 
+				//--------------------------------------
+				//	クレジットを読み込み
+				var copyright = $( 'ezel > env > credits > copyright' , data );
+				for( var i = 0; copyright.length > i; i ++ ){
+					this.PxEZEL.credits.copyright.push( $( copyright[i] ).text() );
+				}
+				var staff = $( 'ezel > env > credits > staff' , data );
+				for( var i = 0; staff.length > i; i ++ ){
+					var partName = staff[i].getAttribute('part');
+					if( !this.PxEZEL.strlen( partName ) ){ continue; }
+					if( !this.PxEZEL.credits.staff[partName] ){
+						this.PxEZEL.credits.staff[partName] = new Array();
+					}
+					this.PxEZEL.credits.staff[partName].push( $( staff[i] ).text() );
+				}
+				//	/ クレジットを読み込み
+				//--------------------------------------
+
 				//	再生する
 				this.PxEZEL.play();
 			}
@@ -372,8 +447,6 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 	this.play = function(){
 		if( !this.playingStatus.fixed ){
 			//	まだアクションの途中だったら
-			//	UTODO : 未実装
-//			this.playingStatus.fixed = true;
 			return true;
 		}
 
@@ -435,12 +508,15 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 			case 'show-message-panel':
 				if( currentAction.effect == 'fadein' ){
 					var PxEZEL = this;
-					$( this.keyElements.messagePanel ).fadeIn(
+					$( this.keyElements.messagePanelFrame ).fadeIn(
 						'slow' ,
 						function(){
-							$( PxEZEL.keyElements.messagePanelFrame ).fadeIn(
+							$( PxEZEL.keyElements.messagePanel ).fadeIn(
 								'slow' ,
 								function(){
+									if( PxEZEL.strlen( PxEZEL.keyElements.messagePanelSpeaker.innerHTML ) ){
+										$( PxEZEL.keyElements.messagePanelSpeaker ).show();
+									}
 									PxEZEL.playingStatus.fixed = true;
 									PxEZEL.playNext();
 								}
@@ -450,11 +526,13 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 				}else{
 					this.keyElements.messagePanel.style.display = 'block';
 					this.keyElements.messagePanelFrame.style.display = 'block';
+					this.keyElements.messagePanelSpeaker.style.display = 'block';
 					this.playingStatus.fixed = true;
 					this.playNext();
 				}
 				break;
 			case 'hide-message-panel':
+				this.keyElements.messagePanelSpeaker.style.display = 'none';
 				if( currentAction.effect == 'fadeout' ){
 					var PxEZEL = this;
 					$( this.keyElements.messagePanel ).fadeOut(
@@ -481,48 +559,175 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 				bgImage.src = currentAction.image.src;
 				bgImage.width = this.keyElements.backgroundLayer.offsetWidth;
 				bgImage.height = this.keyElements.backgroundLayer.offsetWidth;
+				$( bgImage ).hide();
 				this.keyElements.backgroundLayer.innerHTML = '';
 				this.keyElements.backgroundLayer.appendChild( bgImage );
-				this.playingStatus.fixed = true;
-				this.playNext();
+				if( currentAction.effect == 'fadein' ){
+					var PxEZEL = this;
+					$( 'img' , this.keyElements.backgroundLayer ).fadeIn(
+						'slow' ,
+						function(){
+							PxEZEL.playingStatus.fixed = true;
+							PxEZEL.playNext();
+						}
+					);
+				}else{
+					$( bgImage ).show();
+					this.playingStatus.fixed = true;
+					this.playNext();
+				}
 				break;
 			case 'unset-bgimage':
-				this.keyElements.backgroundLayer.innerHTML = '';
-				this.playingStatus.fixed = true;
-				this.playNext();
+				if( currentAction.effect == 'fadeout' ){
+					var PxEZEL = this;
+					$( 'img' , this.keyElements.backgroundLayer ).fadeOut(
+						'slow' ,
+						function(){
+							PxEZEL.keyElements.backgroundLayer.innerHTML = '';
+							PxEZEL.playingStatus.fixed = true;
+							PxEZEL.playNext();
+						}
+					);
+				}else{
+					this.keyElements.backgroundLayer.innerHTML = '';
+					this.playingStatus.fixed = true;
+					this.playNext();
+				}
 				break;
 			case 'slide':
 				this.keyElements.slideLayer.innerHTML = '';
+				$( this.keyElements.slideLayer ).css( 'overflow' , 'auto' );
 
-				var elmPre = document.createElement('div');
-				elmPre.PxEZEL = this;
-				elmPre.style.display = 'block';
-				elmPre.style.backgroundColor = 'transparent';
-				elmPre.style.backgroundImage = 'none';
-				elmPre.style.whiteSpace = 'pre';
-				elmPre.style.padding = '10px';
-				elmPre.style.margin = '0px';
-				var elmPreSrc = currentAction.content;
-				if( currentAction.type == 'html' ){
-					$( elmPre ).html( elmPreSrc );
-				}else{
-					$( elmPre ).text( elmPreSrc );
+				switch( currentAction.type ){
+					case 'image':
+						$( this.keyElements.slideLayer ).css( 'overflow' , 'hidden' );
+						var elmImg = document.createElement('img');
+						elmImg.src = currentAction.content.src;
+						if( window.opera ){
+							elmImg.style.display = 'table';//←Operaのバグ(?)対策
+						}
+						this.keyElements.slideLayer.appendChild( elmImg );
+						break;
+					case 'swf':
+						this.keyElements.slideLayer.style.overflow = 'auto';
+						alert( 'UTODO: Flashスライド機能('+currentAction.type+')は開発中です。' );
+						break;
+					case 'html':
+					case 'text':
+					default:
+						var elmPre = document.createElement('div');
+						elmPre.PxEZEL = this;
+						elmPre.style.display = 'block';
+						elmPre.style.backgroundColor = 'transparent';
+						elmPre.style.backgroundImage = 'none';
+						elmPre.style.whiteSpace = 'pre';
+						elmPre.style.padding = '10px';
+						elmPre.style.margin = '0px';
+						var elmPreSrc = currentAction.content;
+						if( currentAction.type == 'html' ){
+							$( elmPre ).html( elmPreSrc );
+						}else{
+							$( elmPre ).text( elmPreSrc );
+						}
+
+						this.keyElements.slideLayer.appendChild( elmPre );
+						break;
 				}
 
-				this.keyElements.slideLayer.appendChild( elmPre );
+				var posX = 0;
+				var posY = 0;
+				if( this.strlen( currentAction.position ) ){
+					var currentDisplay = $( this.keyElements.slideLayer ).css( 'display' );
+					if( currentDisplay == 'none' ){
+						$( this.keyElements.slideLayer ).css( 'visibility' , 'hidden' );
+						$( this.keyElements.slideLayer ).show();
+					}
+					if( currentAction.position.indexOf(',',0) ){
+						// カンマが含まれていたら X,Y 形式として解釈
+						var splitedPosition = currentAction.position.split(',');
+						posX = parseInt( splitedPosition[0] );
+						posY = parseInt( splitedPosition[1] );
+					}else{
+						// 数値だけなら X として解釈
+						posX = parseInt( currentAction.position );
+					}
+					$( this.keyElements.slideLayer ).scrollTop(posY).scrollLeft(posX);
+					if( currentDisplay == 'none' ){
+						$( this.keyElements.slideLayer ).hide();
+						$( this.keyElements.slideLayer ).css( 'visibility' , 'visible' );
+					}
+				}
 
-				this.playingStatus.fixed = true;
-				this.playNext();
+				if( this.strlen( currentAction.moveto ) ){
+					var currentDisplay = $( this.keyElements.slideLayer ).css( 'display' );
+					if( currentDisplay == 'none' ){
+						$( this.keyElements.slideLayer ).css( 'visibility' , 'hidden' );
+						$( this.keyElements.slideLayer ).show();
+					}
+					if( currentAction.moveto.indexOf(',',0) ){
+						// カンマが含まれていたら X,Y 形式として解釈
+						var splitedPosition = currentAction.moveto.split(',');
+						posX = parseInt( splitedPosition[0] );
+						posY = parseInt( splitedPosition[1] );
+					}else{
+						// 数値だけなら X として解釈
+						posX = parseInt( currentAction.moveto );
+					}
+					if( currentDisplay == 'none' ){
+						$( this.keyElements.slideLayer ).scrollTop(posY).scrollLeft(posX);
+						$( this.keyElements.slideLayer ).hide();
+						$( this.keyElements.slideLayer ).css( 'visibility' , 'visible' );
+						this.playingStatus.fixed = true;
+						this.playNext();
+					}else{
+						var PxEZEL = this;
+						$( this.keyElements.slideLayer ).animate(
+							{scrollTop:posY+'px',scrollLeft:posX+'px'},
+							{
+								complete:function(){
+									PxEZEL.playingStatus.fixed = true;
+									PxEZEL.playNext();
+								}
+							}
+						);
+					}
+				}else{
+					this.playingStatus.fixed = true;
+					this.playNext();
+				}
+
 				break;
 			case 'show-slide':
-				this.keyElements.slideLayer.style.display = 'block';
-				this.playingStatus.fixed = true;
-				this.playNext();
+				if( currentAction.effect == 'fadein' ){
+					var PxEZEL = this;
+					$( this.keyElements.slideLayer ).fadeIn(
+						'slow' ,
+						function(){
+							PxEZEL.playingStatus.fixed = true;
+							PxEZEL.playNext();
+						}
+					);
+				}else{
+					this.keyElements.slideLayer.style.display = 'block';
+					this.playingStatus.fixed = true;
+					this.playNext();
+				}
 				break;
 			case 'hide-slide':
-				this.keyElements.slideLayer.style.display = 'none';
-				this.playingStatus.fixed = true;
-				this.playNext();
+				if( currentAction.effect == 'fadeout' ){
+					var PxEZEL = this;
+					$( this.keyElements.slideLayer ).fadeOut(
+						'slow' ,
+						function(){
+							PxEZEL.playingStatus.fixed = true;
+							PxEZEL.playNext();
+						}
+					);
+				}else{
+					this.keyElements.slideLayer.style.display = 'none';
+					this.playingStatus.fixed = true;
+					this.playNext();
+				}
 				break;
 			case 'select':
 				this.setCtrl( {
@@ -534,7 +739,7 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 				break;
 			case 'sleep':
 				var localPxEZEL = this;
-				setTimeout( function(){ localPxEZEL.playNext(); } , 1000 );
+				setTimeout( function(){ localPxEZEL.playNext(); } , parseInt( currentAction.long ) );
 				this.playingStatus.fixed = true;
 				break;
 			case 'goto':
@@ -567,7 +772,9 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 					start: currentAction.start ,
 					speed: currentAction.speed ,//0～9 の 10段階
 					success: function(){
-						$( 'img' , this.PxEZEL.keyElements.characterLayer ).attr( 'src' , this.PxEZEL.characters[this.PxEZEL.playingStatus.characterIndex].images[this.PxEZEL.playingStatus.characterAngle].src.src );
+						if( this.PxEZEL.strlen( this.PxEZEL.playingStatus.characterIndex ) ){
+							$( 'img' , this.PxEZEL.keyElements.characterLayer ).attr( 'src' , this.PxEZEL.characters[this.PxEZEL.playingStatus.characterIndex].images[this.PxEZEL.playingStatus.characterAngle].src.src );
+						}
 						this.PxEZEL.setCtrl( {type:'next'} );
 						this.PxEZEL.playingStatus.fixed = true;
 						if( this.autonext ){
@@ -577,7 +784,7 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 				} );
 				break;
 			default:
-				alert('ERROR! 不明なアクションが使用されました。');
+				alert('ERROR! 不明なアクション['+currentAction.action+']が使用されました。');
 				this.playingStatus.fixed = true;
 				this.setCtrl( {type:'next'} );
 				break;
@@ -804,10 +1011,120 @@ function PxEZEL( path_lib_dir , path_content , stageElement ){
 	//--------------------------------------
 	//	プレゼンテーションを終了する。
 	this.finish = function(){
-		if( !confirm( 'お疲れ様でした。'+"\n"+'以上でプレゼンテーションは終了です。'+"\n"+'もう一度、最初から再生しますか？' ) ){
-			return true;
+
+		var elm = this.getStageElement();
+		elm.innerHTML = '';
+
+		//	クレジットレイヤーを作成
+		var elmBg = document.createElement('div');
+		elmBg.PxEZEL = this;
+		elmBg.style.position = 'absolute';
+		elmBg.style.left = '0px';
+		elmBg.style.top = '0px';
+		elmBg.style.overflow = 'hidden';
+		elmBg.style.backgroundColor = '#000000';
+		elmBg.style.width = ( this.env_stage_width ) + 'px';
+		elmBg.style.height = ( this.env_stage_height ) + 'px';
+		elmBg.style.display = 'none';
+
+		//	タイトル枠
+		var elmTitle = document.createElement('div');
+		elmTitle.PxEZEL = this;
+		$( elmTitle )
+			.css( 'position' , 'absolute' )
+			.css( 'left' , '20px' )
+			.css( 'top' , '30px' )
+			.css( 'color' , '#ffffff' )
+			.css( 'overflow' , 'hidden' )
+			.css( 'width' , ( this.env_stage_width -40 ) + 'px' )
+			.css( 'display' , 'block' )
+			.css( 'font-size' , '14px' )
+			.css( 'font-weight' , 'bold' )
+			.css( 'text-align' , 'center' )
+			.text(this.title)
+		;
+		elmBg.appendChild( elmTitle );
+
+		//	クレジット枠
+		var elmCredit = document.createElement('div');
+		elmCredit.PxEZEL = this;
+		elmCredit.style.position = 'absolute';
+		elmCredit.style.left = '20px';
+		elmCredit.style.top = ( 60 ) + 'px';
+		elmCredit.style.display = 'block';
+		elmCredit.style.color = '#ffffff';
+		elmCredit.style.backgroundColor = '#666666';
+		elmCredit.style.overflow = 'auto';
+		elmCredit.style.width = ( this.env_stage_width -40 ) + 'px';
+		elmCredit.style.height = ( this.env_stage_height -80 -30 ) + 'px';
+		if( this.credits.copyright.length ){
+			var elmCreditUl = document.createElement('ul');
+			for( var line in this.credits.copyright ){
+				var elmCreditLi = document.createElement('li');
+				elmCreditLi.style.textAlign = 'center';
+				elmCreditLi.style.listStyleType = 'none';
+				elmCreditLi.innerHTML = 'Copyright &copy;' + this.credits.copyright[line] + '.';
+				elmCreditUl.appendChild( elmCreditLi );
+			}
+			$( elmCreditUl )
+				.css( 'margin' , '5px' )
+				.css( 'padding' , '5px' )
+				.css( 'border-bottom' , '1px solid #dddddd' )
+			;
+			elmCredit.appendChild( elmCreditUl );
 		}
-		this.init( this.path_lib_dir , this.path_content , this.stageElement );	//初期化する
+		var elmCreditDl = document.createElement('dl');
+		$( elmCreditDl ).css( 'margin' , '5px' )
+						.css( 'padding' , '5px' );
+		for( var line_dt in this.credits.staff ){
+			var elmCreditDt = document.createElement('dt');
+			elmCreditDt.innerHTML = line_dt;
+			$( elmCreditDt )
+				.css( 'float' , 'left' )
+				.css( 'width' , '120px' )
+				.css( 'margin' , '0px' )
+				.css( 'padding' , '0px' )
+			;
+			elmCreditDl.appendChild( elmCreditDt );
+			for( var line_dd in this.credits.staff[line_dt] ){
+				var elmCreditDd = document.createElement('dd');
+				elmCreditDd.innerHTML = this.credits.staff[line_dt][line_dd];
+				$( elmCreditDd )
+					.css( 'float' , 'none' )
+					.css( 'margin' , '0px' )
+					.css( 'margin-left' , '130px' )
+					.css( 'padding' , '0px' )
+				;
+				elmCreditDl.appendChild( elmCreditDd );
+			}
+		}
+		elmCredit.appendChild( elmCreditDl );
+		elmBg.appendChild( elmCredit );
+
+		//	リプレイボタン
+		var elmReplay = document.createElement('button');
+		elmReplay.PxEZEL = this;
+		elmReplay.style.position = 'absolute';
+		elmReplay.style.left = ( ( this.env_stage_width -140 )/2 ) + 'px';
+		elmReplay.style.bottom = '10px';
+		elmReplay.style.color = '#ffffff';
+		elmReplay.style.backgroundColor = '#333333';
+		elmReplay.style.overflow = 'hidden';
+		elmReplay.style.width = ( 140 ) + 'px';
+		$( elmReplay ).text('もう一度最初から');
+		$( elmReplay ).click( function(){
+			this.PxEZEL.init(
+				this.PxEZEL.path_lib_dir ,
+				this.PxEZEL.path_content ,
+				this.PxEZEL.stageElement
+			);
+			return true;
+		} );
+		elmBg.appendChild( elmReplay );
+
+		elm.appendChild( elmBg );
+		$( elmBg ).fadeIn( 'slow' );
+
 		return true;
 	}
 

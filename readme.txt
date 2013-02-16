@@ -27,9 +27,12 @@ sampledata/start.xml に同梱。
 $(document).ready( function(){
 	//	PxEZELは、3つの引数を取る
 	var cont_PxEZEL = new PxEZEL(
-		'resources/EZEL' ,                            //PxEZEL.jsを置いたディレクトリのパス
-		'resources/EZEL/sampledata/start.xml' ,       //コンテンツXMLのパス
-		document.getElementById('cont_ezel_content')  //ステージの要素
+		//PxEZEL.jsを置いたディレクトリのパス
+		'resources/EZEL' ,
+		//コンテンツXMLのパス
+		'resources/EZEL/sampledata/start.xml' ,
+		//ステージの要素
+		document.getElementById('cont_ezel_content')
 	);
 } );
 </script>
